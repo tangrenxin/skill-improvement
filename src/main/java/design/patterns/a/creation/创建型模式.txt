@@ -1,0 +1,7 @@
+************************************  创建型模式  ************************************
+1.简单工厂模式（Simple Factory Pattern）
+2.工厂方法模式（Factory Method Pattern）
+3.抽象工厂模式（Abstract Factory Pattern）
+4.创建者模式（Builder Pattern）
+5.原型模式（Prototype Pattern）
+6.单例模式（Singleton Pattern）

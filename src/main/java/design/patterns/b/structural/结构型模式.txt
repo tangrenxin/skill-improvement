@@ -1,0 +1,8 @@
+************************************  结构型模式  ************************************
+1.外观模式/门面模式（Facade Pattern）
+2.适配器模式（Adapter Pattern）
+3.代理模式（Proxy Pattern）
+4.装饰模式（Decorator Pattern）
+5.桥梁模式/桥接模式（Bridge Pattern）
+6.组合模式（Composite Pattern）
+7.享元模式（Flyweight Pattern）
