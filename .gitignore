@@ -1,2 +1,22 @@
-# Project exclude paths
-/target/
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+#package files
+target
+*.xml.bak
+*.iml
+/.idea
+.classpath
+.project
+.settings/
+/.idea/copyright/profiles_settings.xml
+
+
+*.diff
+dependency-reduced-pom.xml
+.idea/workspace.xml
+streaming-data.iml
