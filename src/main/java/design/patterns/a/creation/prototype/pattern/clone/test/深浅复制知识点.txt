@@ -1,0 +1,57 @@
+******************************  浅复制&深复制  *******************************
+一、什么是clone
+    在实际编程过程中，我们常常要遇到这种情况：有一个对象object1，在某一时刻object1中已经包含了一些有效值，此时可能会需
+要一个和object1完全相同新对象object2，并且此后对object2任何改动都不会影响到object1中的值，也就是说，object1与
+object2是两个独立的对象，但object2的初始值是由object1对象确定的。要满足这种需求虽然有很多途径，但实现clone（）方法是
+其中最简单，也是最高效的手段。
+    Java的所有类都默认继承java.lang.Object类，在java.lang.Object类中有一个方法clone()。
+
+二、如何使用clone方法
+    要使类具有克隆能力能力时，需要实现Cloneable接口，实现它的目的是作为一个对象的一个mixin(混入)接口，表明这个对象是允
+许克隆的。Cloneable是一个空接口(标记接口)，它决定了Object中受保护的clone方法的实现行为：
+    1.如果一个类实现了Cloneable接口，Object的clone方法就返回这个对象的逐域拷贝，
+    2.否则就抛出CloneNotSupportedException异常。如果实现了这个接口，类和它所有的超类都无需调用构造器就可以创建对象。
+（如测试类中的Student）
+
+如何使用clone方法的分析：
+    1.希望能够实现clone功能的类实现Cloneable
+    2.重载clone()方法。最后在clone()方法中调用了super.clone()，这也意味着无论clone类的继承结构是什么样的，
+    super.clone()直接或间接调用了java.lang.Object类的clone()方法。
+    3.最后仔细观察一下Object类的clone()是一个native方法，native方法的**效率**一般来说都是远高于java中的非native
+    方法。这也解释了为什么要用Object中clone()方法，而不是先new一个类，然后把原始对象中的信息赋到新对象中，虽然这也实现
+    了clone功能。
+    4.对于第二点，也要观察Object类中的clone()还是一个protected属性的方法。这也意味着如果要应用clone()方法，必须继承
+    Object类，在Java中所有的类是缺省(默认)继承Object类的，也就不用关心这点了。然后重载clone()方法。还有一点要考虑的
+    是，为了让其它类能调用这个clone类的clone()方法，重载之后要把clone()方法的属性设置为**public**。
+
+那么clone类为什么还要实现Cloneable接口呢？
+    需要注意的是，Cloneable接口是不包含任何方法的，其实这个接口仅仅是一个标志，而且这个标志也仅仅是针对Object类中
+clone()方法的，如果clone类没有实现Cloneable接口，并调用了Object的clone()方法(也就是调用了super.Clone()方法)，
+那么Object的clone()方法就会抛出 CloneNotSupportedException异常。
+
+三、浅复制&深复制(浅拷贝&深拷贝)
+    调用clone方法产生的效果是：先在内存中开辟一块和原始对象一样的空间，然后拷贝原始对象中的内容。对于基本数据类型，这样
+的操作是没有问题的，但对于非基本类型，需要分浅拷贝和深拷贝两种情况：
+    1.浅拷贝只复制指向某个对象的指针，而不复制对象本身，新旧对象还是共享同一块内存，所以如果其中一个对象改变了这个地址，
+    就会影响到另一个对象。
+    2.深拷贝是将一个对象从内存中完整的拷贝一份出来,从堆内存中开辟一个新的区域存放新对象,且修改新对象不会影响原对象。
+
+任何类都可以实现深度clone吗？
+    答案是否定的，例如，StringBuffer，看一下 JDK API中关于StringBuffer的说明，StringBuffer【没有重载clone()】
+方法，更为严重的是StringBuffer还是一个【final类】，这也是说我们也不能用继承的办法间接实现StringBuffer的clone。所以
+如果一个类中包含有StringBuffer类型对象或和StringBuffer相似类的对象，我们有两种选择：要么只能实现浅clone，要么自己重
+新生成对象： new StringBuffer(oldValue.toString()); 进行赋值。
+    *** 特殊情况：
+    要知道除了基本数据类型（byte，short，int，long，double等）可自动实现深度拷贝以外，其它例如Integer、String、
+Double等是一特殊情况，它们都没有重载clone()并且都有final修饰，但是【看上去】可以自动实现深度拷贝。为啥呢?
+
+从 TestClone3.java 测试结果来看：
+    Sttring类型的变量看起来好像实现了深度clone，因为对book_clone.name的改动并没有影响到book.name。实质上，在clone
+的时候book_clone.name与book.name仍然是引用，而且都指向了同一个 String对象。
+但在执行book_clone.name = book_clone.name.substring(0,5)的时候，生成了一个新的String类型，然后又赋回给
+book_clone.name。这是因为String被 Sun公司的工程师写成了一个不可更改的类（immutable class），在所有String类中的函
+数都不能更改自身的值。类似的，String类中的其它方法也是如此，都是生成一个新的对象返回。当然StringBuffer还是原来的对象。
+
+    需要知道的是在Java中所有的基本数据类型都有一个相对应的类，例如Integer类对应int类型，Double类对应double类型等
+等，这些类也与String类相同，都是不可以改变的类。也就是说，这些的类中的所有方法都是不能改变其自身的值的。这也让我们在编
+clone类的时候有了一个更多的选择。同时我们也可以把自己的类编成不可更改的类。
