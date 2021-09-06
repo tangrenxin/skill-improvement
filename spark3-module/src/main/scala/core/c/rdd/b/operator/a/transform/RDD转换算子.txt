@@ -1,0 +1,73 @@
+一、RDD根据数据处理方式的不同，将算子整体上分为
+  1.Value类型（单值类型）
+  2.双Value类型
+  3.Key-Value类型
+
+二、Value类型（单值类型）
+1.map：将处理的数据逐条进行映射转换，这里的转换可以是类型的转换，也可以是值的转换。
+2.mapPartitions：将待处理的数据以【分区为单位】发送到计算节点进行处理，这里的处理是指可以进行任意的处理，哪怕是过滤数据。
+3.mapPartitionsWithIndex:将待处理的数据以【分区为单位】发送到计算节点进行处理，输入:(分区id，迭代器) 返回：(迭代器)
+4.flatMap：扁平化操作
+5.glom：将同一个分区的数据直接转换为相同类型的内存数组进行处理，分区不变（练习：计算所有分区最大值求和（分区内取最大值，分区间最大值求和））
+6.groupBy：将数据根据指定的规则进行分组, 分区默认不变，但是数据会被打乱重新组合，我们将这样的操作称之为 shuffle。
+7.filter：将数据根据指定的规则进行筛选过滤，符合规则的数据保留，不符合规则的数据丢弃。
+          注意：当数据进行筛选过滤后，分区不变，但是分区内的数据可能不均衡，生产环境下，可能会出现数据倾斜。
+8.sample：根据指定的规则从数据集中随机抽取数据，需要传递三个参数(数据是否放回,每条数据被抽取的概率,随机数算法的种子)
+9.distinct：将数据集中重复的数据去重
+10.coalesce：更改分区数量(偏向缩减分区)，也可以扩大分区，但是需要使用shuffle操作，coalesce默认是不使用shuffle操作
+11.repartition：更改分区数量(缩减/扩大),底层就是调用coalesce，并且使用shuffle
+                不管是缩减分区还是扩大分区，repartition都能实现，因为无论如何都会经 shuffle 过程。
+12.sortBy：
+
+三、双Value类型
+13.intersection：交集
+14.union：并集
+15.subtract：差集 以一个 RDD 元素为主，去除两个 RDD 中重复元素，将其他元素保留下来。求差集
+16.zip：拉链 将两个 RDD 中的元素，以键值对的形式进行合并。其中，键值对中的 Key 为第 1 个 RDD
+        中的元素，Value 为第 2 个 RDD 中的相同位置的元素。
+
+四、Key-Value类型
+17.partitionBy：将数据按照指定 Partitioner 重新进行分区。Spark 默认的分区器是 HashPartitioner
+18.reduceByKey：可以将数据按照相同的 Key 对 Value 进行聚合
+19.groupBykey：将数据源的数据根据 key 对 value 进行分组
+20.aggregateByKey
+21.foldByKey
+22.combineByKey
+23.join：在类型为(K,V)和(K,W)的 RDD 上调用，返回一个相同 key 对应的所有元素连接在一起的(K,(V,W))的 RDD
+24.leftOuterJoin：类似于 SQL 语句的左外连接
+
+五、相似算子之间的区别
+1.map 和 mapPartition 的区别？
+1）数据处理的角度Spark03_RDD_Operator_Transform_MapPartitionsWithIndex$
+  map算子是分区内一个数据一个数据的执行，类似于串行操作。而mapPartition算子是以分区为单位进行批处理操作。
+2）功能角度
+  map算子主要目的是将数据源中的数据进行转换和改变，但不会减少或增多数据。
+  mapPartition算子需要传递一个迭代器，返回一个迭代器，没有要求元素个数保持不变，所以可以增加或减少数据。
+3）性能角度
+  map算子因为类似于串行操作，所以性能比较低，而mapPartitions算子类似于批处理处理，所以性能较高。但是mapPartition算
+  子会长时间占用内存，那么这样会导致内存可能不够用，出现内存溢出的错误。所以在内存有限的情况下，不推荐使用，使用map操作。
+
+2.groupBy 和 groupByKey的区别是什么？
+1）从按哪一个key来做分组角度
+  groupByKey() 是确定的
+  groupBy() 按哪个key来做分组是不确定的，需要指定
+2）从返回值上看
+  groupByKey()：返回值是RDD[(String, Iterable[Int])],返回结果会把value单独拿出来做聚合
+  groupBy(K)：返回值RDD[(String, Iterable[(String,Int)])],返回结果不会把value单独拿出来做聚合,按整体来进行分组
+
+3.reduceByKey 和 groupByKey 的区别？（面试爱问）p67
+
+
+4.reduceByKey、foldByKey、aggregateByKey、combineByKey 的区别？
+reduceByKey: 相同 key 的第一个数据不进行任何计算，分区内和分区间计算规则相同
+FoldByKey: 相同 key 的第一个数据和初始值进行分区内计算，分区内和分区间计算规则相同
+AggregateByKey：相同 key 的第一个数据和初始值进行分区内计算，分区内和分区间计算规则可以不相同
+CombineByKey:当计算时，发现数据结构不满足要求时，可以让第一个数据转换结构。分区内和分区间计算规则不相同。
+
+
+
+
+
+
+
+

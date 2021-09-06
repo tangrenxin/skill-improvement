@@ -1,0 +1,21 @@
+1.DataFrame 是什么
+  DF是一种以RDD为基础的分布式数据集，类似于传统数据库中的二维表格。DF和RDD的主要区别在于，前者带有schema信息，即DF所
+表示的二维表数据集的每一列都带有名称和类型。与Hive类似，DF也支持前来数据类型（struct、array和map）。
+  DF会保存元数据信息，DF也是懒执行的，但性能上比RDD要高，主要原因是：DF优化的执行计划，即查询计划通过 Spark catalyst optimiser 进行优化
+
+2.DataSet 是什么
+  DataSet 是分布式数据集合。DataSet 是 Spark 1.6 中添加的一个新抽象，是 DataFrame的一个扩展。它提供了 RDD 的优势
+（强类型，使用强大的 lambda 函数的能力）以及 Spark SQL 优化执行引擎的优点。DataSet 也可以使用功能性的转换（操作 map
+，flatMap，filter等等）。
+1）DataSet 是 DataFrame API 的一个扩展，是 SparkSQL 最新的数据抽象
+2）用户友好的 API 风格，既具有类型安全检查也具有 DataFrame 的查询优化特性；
+3）用样例类来对 DataSet 中定义数据的结构信息，样例类中每个属性的名称直接映射到DataSet 中的字段名称；
+4）DataSet 是强类型的。比如可以有 DataSet[Car]，DataSet[Person]。 ➢ DataFrame 是 DataSet 的特列，DataFrame=DataSet[Row] ，
+所以可以通过 as 方法将DataFrame 转换为 DataSet。Row 是一个类型，跟 Car、Person 这些的类型一样，所有的表结构信息都
+用 Row 来表示。获取数据时需要指定顺序
+
+3.DSL 语法
+  DataFrame 提供一个特定领域语言(domain-specific language, DSL)去管理结构化的数据。
+可以在 Scala, Java, Python 和 R 中使用 DSL，使用 DSL 语法风格不必去创建临时视图了
+
+工作中最常用的就是DSL语法

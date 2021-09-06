@@ -7,9 +7,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="skill-improvement" />
+        <module name="leetcode-module" />
+        <module name="scala-module" />
+        <module name="spark3-module" />
+        <module name="java-module" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="8" />
+    <bytecodeTargetLevel target="8">
+      <module name="spark-module" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
