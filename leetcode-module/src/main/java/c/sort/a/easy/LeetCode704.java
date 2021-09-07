@@ -21,12 +21,26 @@ public class LeetCode704 {
 
   public static void main(String[] args) {
     int[] nums = {-1, 0, 3, 5, 9, 12};
-
+    System.out.println(search(nums, -1));
   }
 
 
-  public int search(int[] nums, int target) {
+  public static int search(int[] nums, int target) {
+    int headIndex = 0;
+    int tailIndex = nums.length - 1;
 
-    return 0;
+    while (headIndex <= tailIndex) {
+      int curr = (int) Math.floor((tailIndex - headIndex) / 2) + headIndex;
+      if (nums[curr] == target) {
+        return curr;
+      } else if (nums[curr] > target) {
+        tailIndex = curr - 1;
+        continue;
+      } else {
+        headIndex = curr + 1;
+        continue;
+      }
+    }
+    return -1;
   }
 }
