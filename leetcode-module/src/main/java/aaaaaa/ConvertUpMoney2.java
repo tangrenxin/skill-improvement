@@ -75,8 +75,6 @@ public class ConvertUpMoney2 {
           // 当前 0 的位置 是从右到左从1开始数的第9位（亿位）
           unit = IUNIT[9 - 1];
         } else if (length - i == 5 && isWan) {
-
-
           // 这行代码其实没必要写，只是为了方便理解
           num = "";
           // 当前 0 的位置 是从右到左从1开始数的第5位（万位）

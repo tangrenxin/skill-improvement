@@ -7,10 +7,10 @@ import org.apache.commons.lang.StringUtils;
  * @Author: tangrenxin
  * @Date: 2021/9/13 21:22
  */
-public class ConvertUpMoney {
+public class ConvertUpMoneySimple {
 
   //整数部分的人民币大写
-  private static final String[] NUMBERS = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
+  private static final String[] NUMS = {"零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"};
   //数位部分 100000409.50
   //元,	拾,	佰,	仟,	万,	拾,	佰,	仟,	亿,	拾,	佰,	仟,	万,	拾,	佰,	仟
   //0 ,	1,	2,	3,	4,	5,	6,	7,	8,	9,	10,	11,	12,	13,	14,	15
@@ -21,28 +21,21 @@ public class ConvertUpMoney {
 
   //转成中文的大写金额
   public static String toChinese(String str) {
-    //判断输入的金额字符串是否符合要求
-    if (StringUtils.isBlank(str) || !str.matches("(-)?[\\d]*(.)?[\\d]*")) {
-      System.out.println("抱歉，请输入数字！");
-      return str;
-    }
-    //判断输入的金额字符串
-    if ("0".equals(str) || "0.00".equals(str) || "0.0".equals(str)) {
-      return "零元";
-    }
 
-    //判断是否存在负号"-"
+    // TODO 2.输入数据校验，
+    //  只包含数字、. 、正负号，
+    //  整数部分第一个数是否是0，
+    //  如果输入的是 0、0.0、0.00直接返回 零元
+
+    // TODO 3.判断是否存在负号"-"
     boolean flag = false;
     if (str.startsWith("-")) {
       flag = true;
       str = str.replaceAll("-", "");
     }
-    //如果输入字符串中包含逗号，替换为 "."
-    str = str.replaceAll(",", ".");
-
+    // TODO 4.分离整数部分和小数部分
     String integerStr;//整数部分数字
     String decimalStr;//小数部分数字
-
     //分离整数部分和小数部分
     if (str.indexOf(".") > 0) {//整数部分和小数部分
       integerStr = str.substring(0, str.indexOf("."));
@@ -54,30 +47,19 @@ public class ConvertUpMoney {
       integerStr = str;
       decimalStr = "";
     }
-
-    //整数部分超出计算能力，直接返回
+    // TODO 5.【整数计算】
+    // 1）整数部分超出计算能力，直接返回
     if (integerStr.length() > IUNIT.length) {
       System.out.println(str + "：超出计算能力");
       return str;
     }
-
-    //整数部分存入数组  目的是为了可以动态的在字符串数组中取对应的值
+    // 2）整数部分存入数组  目的是为了可以动态的在字符串数组中取对应的值
     int[] integers = toIntArray(integerStr);
-
-    //判断整数部分是否存在输入012的情况
-    if (integers.length > 1 && integers[0] == 0) {
-      System.out.println("抱歉，请输入数字！");
-      if (flag) {
-        str = "-" + str;
-      }
-      return str;
-    }
-    //设置万单位
+    //  todo 3）设置万单位
     boolean isWan = isWanUnits(integerStr);
-
-    //小数部分数字存入数组
+    // 3）小数部分数字存入数组
     int[] decimals = toIntArray(decimalStr);
-    //返回最终的大写金额
+    // TODO 6.result = 【整数计算】+【小数计算】
     String result = getChineseInteger(integers, isWan) + getChineseDecimal(decimals);
 
     if (flag) {
@@ -86,6 +68,77 @@ public class ConvertUpMoney {
     } else {
       return result;
     }
+  }
+  
+  /**
+   * 【整数计算】
+   * 1.没有0的情况，正常输出数字+单位
+   * 2.有0的情况
+   * 1) 0在13，9，5(iswan)，1时，需要填充万、亿、万、元
+   * 2) 第二个万在显示时有个特殊情况
+   *    如果 万-亿之间的数全是0，不显示万
+   *    如果 万-亿之间的数不全是0，要显示万
+   * 3) 对应方法：isWanUnits
+   * 4) 什么时候显示 “零”，
+   *    (length - i) > 1 && integers[i + 1] != 0
+   *
+   *  10 0000 0001
+   *  有 && isWan 结果: 壹拾亿零壹元伍角 （正确）
+   *  无 && isWan 结果: 壹拾亿万零壹元伍角 （错误）
+   *
+   */
+  public static String getChineseInteger(int[] ints, boolean isWan) {
+    StringBuffer buff = new StringBuffer("");
+    // 10
+    int len = ints.length;
+    // 1000000409.50: 壹拾亿零肆佰零玖元伍角
+    // 0123456789
+    for (int i = 0; i < len; i++) {
+      String unit = "";
+      // TODO 当前位置不是 0
+      if(ints[i] != 0){
+        buff.append(NUMS[ints[i]] + IUNIT[len - i - 1]);
+      } else {
+        // TODO 当前位置是 0
+        //  0在13，9，5(iswan)，1时，需要填充万、亿、万、元
+        if ((len - i) == 13) {
+          //万（亿）
+          unit = IUNIT[13-1];
+        } else if ((len - i) == 9) {
+          //亿
+          unit = IUNIT[9-1];
+        } else if ((len - i) == 5 && isWan) {
+          // TODO (len - i) == 5 万-亿之间的数不全是0，要显示万
+          //万
+          unit = IUNIT[5-1];
+        } else if ((len - i) == 1) {
+          //元
+          unit = IUNIT[1-1];
+        }
+        // TODO 什么时候填充 零
+        if ((len - i) > 1 && ints[i + 1] != 0) {
+          unit += NUMS[0];
+        }
+        buff.append(unit);
+      }
+    }
+    return buff.toString();
+  }
+
+  /**
+   *
+   * @param decimals
+   * @return
+   */
+  private static String getChineseDecimal(int[] decimals) { //角 分 厘   038  壹分捌厘
+    StringBuffer chineseDecimal = new StringBuffer("");
+    for (int i = 0; i < decimals.length; i++) {
+      if (i == 3) {
+        break;
+      }
+      chineseDecimal.append(decimals[i] == 0 ? "" : (NUMS[decimals[i]] + DUNIT[i]));
+    }
+    return chineseDecimal.toString();
   }
 
   /**
@@ -102,74 +155,7 @@ public class ConvertUpMoney {
     }
     return array;
   }
-
-  /**
-   * 将整数部分转为大写的金额
-   * @param integers
-   * @param isWan
-   * @return
-   */
-  public static String getChineseInteger(int[] integers, boolean isWan) {
-    StringBuffer chineseInteger = new StringBuffer("");
-    // 10
-    int length = integers.length;
-    // 对于输入的字符串为 "0." 存入数组后为 0
-    if (length == 1 && integers[0] == 0) {
-      return "";
-    }
-    // 1000000409.50: 壹拾亿零肆佰零玖元伍角
-    // 0123456789
-    for (int i = 0; i < length; i++) {
-      //0325464646464
-      String key = "";
-      if (integers[i] == 0) {
-        if ((length - i) == 13) {
-          //万（亿）
-          key = IUNIT[4];
-        } else if ((length - i) == 9) {
-          //亿
-          key = IUNIT[8];
-
-//        } else if ((length - i) == 5 && isWan) {
-        } else if ((length - i) == 5 && integers[i-1] == 0) {
-          /**
-           * 10 0000 0001
-           * 有 && isWan 结果: 壹拾亿零壹元伍角 （正确）
-           * 无 && isWan 结果: 壹拾亿万零壹元伍角 （错误）
-           */
-          //万
-          key = IUNIT[4];
-        } else if ((length - i) == 1) {
-          //元
-          key = IUNIT[0];
-        }
-        // 什么时候填充 零
-        if ((length - i) > 1 && integers[i + 1] != 0) {
-          key += NUMBERS[0];
-        }
-      }
-      chineseInteger
-          .append(integers[i] == 0 ? key : (NUMBERS[integers[i]] + IUNIT[length - i - 1]));
-//      System.out.println(chineseInteger.toString());
-    }
-    return chineseInteger.toString();
-  }
-
-  /**
-   *
-   * @param decimals
-   * @return
-   */
-  private static String getChineseDecimal(int[] decimals) { //角 分 厘   038  壹分捌厘
-    StringBuffer chineseDecimal = new StringBuffer("");
-    for (int i = 0; i < decimals.length; i++) {
-      if (i == 3) {
-        break;
-      }
-      chineseDecimal.append(decimals[i] == 0 ? "" : (NUMBERS[decimals[i]] + DUNIT[i]));
-    }
-    return chineseDecimal.toString();
-  }
+  
 
   /**
    * 判断当前整数部分是否已经是达到【万】
