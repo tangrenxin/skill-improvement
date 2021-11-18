@@ -35,7 +35,7 @@ import java.util.Stack;
  * @Author: tangrenxin
  * @Date: 2021/9/13 02:17
  */
-public class LeetCode155_MinStack {
+public class LC155MinStack {
 
   public static void main(String[] args) throws Exception {
     MinStack minStack = new MinStack();
