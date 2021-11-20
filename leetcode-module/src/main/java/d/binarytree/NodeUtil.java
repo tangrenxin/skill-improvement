@@ -9,6 +9,9 @@ import java.util.LinkedList;
  */
 public class NodeUtil {
 
+  TreeNode root;
+  String[] partTree;
+
   public static TreeNode createBinTree(int[] array) {
     LinkedList list = new LinkedList<TreeNode>();
     // 将一个数组的值依次转换为TreeNode节点  
@@ -32,6 +35,38 @@ public class NodeUtil {
       ((TreeNode) list.get(lastParentIndex)).right = (TreeNode) list.get(lastParentIndex * 2 + 2);
     }
     return rootNode;
+  }
+
+  public String[] intialInput(String s) {
+    String s1 = s.substring(1, s.length() - 1);
+    partTree = s1.split(",");
+    return partTree;
+  }
+
+  public TreeNode createNode(TreeNode rot, int index) {
+    if (index >= partTree.length) {            //从而root实际指向位置不变，所以返回值类型为TreeNode
+      return null;
+    }
+    if (partTree[index].equals("null")) {          //equals判断，而不是==
+      return null;
+    }
+    rot = new TreeNode(Integer.parseInt(partTree[index]));
+    rot.left = createNode(rot.left, 2 * index + 1);
+    rot.right = createNode(rot.right, 2 * index + 2);
+    return rot;
+  }
+
+  public TreeNode createTree(String s) {
+    partTree = intialInput(s);
+    root = createNode(root, 0);
+    return root;
+  }
+
+  public static void main (String[] args) {
+    NodeUtil tt=new NodeUtil();
+    String treeExp="[5,4,8,11,null,13,4,7,2,null,null,null,1]";
+    tt.createTree(treeExp);
+
   }
 
 }

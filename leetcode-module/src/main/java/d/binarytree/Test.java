@@ -13,14 +13,19 @@ public class Test {
 
   public static void main(String[] args) {
 
+    String str = "5,4,8,11,null,13,4,7,2,null,null,null,1";
+//    String str = "[1,2,3]";
+    NodeUtil nodeUtil = new NodeUtil();
+    TreeNode root = nodeUtil.createTree(str);
+    prevOrder(root);
   }
 
   //  先序遍历
-  public void prevOrder(TreeNode root) {
+  public static void prevOrder(TreeNode root) {
     if (root == null) {
       return;
     }
-    System.out.println(root.val + ",");
+    System.out.print(root.val + ",");
     prevOrder(root.left);
     prevOrder(root.right);
   }
