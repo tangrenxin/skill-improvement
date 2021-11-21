@@ -28,11 +28,11 @@ object Code04StateBackend {
     env.setParallelism(1)
     //  ** 在这里配置状态后端 **
     // - 内存
-    env.setStateBackend(new MemoryStateBackend())
-    // - FS
-    env.setStateBackend(new FsStateBackend("HDFSURL")())
-    // - RocksDB
-    env.setStateBackend(new RocksDBStateBackend(""))
+//    env.setStateBackend(new MemoryStateBackend())
+//    // - FS
+//    env.setStateBackend(new FsStateBackend("HDFSURL")())
+//    // - RocksDB
+//    env.setStateBackend(new RocksDBStateBackend(""))
 
 
     // 读取数据

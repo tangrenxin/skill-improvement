@@ -1,0 +1,8 @@
+hello flink
+hello trx
+hello scala
+hello java
+scala yyds
+flink yyds
+java yyds
+xiaoming aini yyds
