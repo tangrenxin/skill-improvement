@@ -20,7 +20,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * @Author: tangrenxin
  * @Date: 2021/11/20 09:48
  */
-public class LC112HasPathSum {
+public class LC112PathSum1 {
 
   /**
    *

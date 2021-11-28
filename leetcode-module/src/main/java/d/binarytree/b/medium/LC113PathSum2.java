@@ -21,7 +21,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * @Author: tangrenxin
  * @Date: 2021/11/20 12:02
  */
-public class LC113PathSum {
+public class LC113PathSum2 {
 
 
   /**
