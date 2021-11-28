@@ -13,6 +13,8 @@
     <module>leetcode-module</module>
     <module>spark3-module</module>
     <module>scala-module</module>
+    <module>flink-module</module>
+    <module>kafka-module</module>
   </modules>
 
 
