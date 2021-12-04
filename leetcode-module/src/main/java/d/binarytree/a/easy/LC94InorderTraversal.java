@@ -31,6 +31,11 @@ public class LC94InorderTraversal {
     System.out.println(inorderTraversal(root));
   }
 
+  /**
+   * 方法一：深度优先遍历
+   * @param root
+   * @return
+   */
   public static List<Integer> inorderTraversal(TreeNode root) {
 
     return dfs(root,new ArrayList<Integer>());
