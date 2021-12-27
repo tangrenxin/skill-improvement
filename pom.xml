@@ -9,10 +9,9 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
-    <module>java-module</module>
+    <module>java-scala-module</module>
     <module>leetcode-module</module>
     <module>spark3-module</module>
-    <module>scala-module</module>
     <module>flink-module</module>
     <module>kafka-module</module>
     <module>redis-module</module>
