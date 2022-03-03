@@ -1,6 +1,9 @@
 package com.apitest.b.transform
 
+import org.apache.flink.api.common.functions.RichFlatMapFunction
+import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.util.Collector
 
 /**
  * @Description:
@@ -76,14 +79,31 @@ object Code01Test {
         warningData => (warningData._1, warningData._2, "warning"),
         loaTempData => (loaTempData.id, "healthy")
       )
-    //    coMapResStream.print()
+        coMapResStream.print()
     // 4.3 合流，union
     // 只能合并 数据类型一致的流 下面这两个流数据类型不一样，会报错
     //    val unionResStream = warningStream.union(lowTempStream)
     val unionResStream = highTempStream.union(lowTempStream)
-    unionResStream.print()
+    unionResStream.flatMap(new RichFlatMapFunction[SensorReading,SensorReading] {
+
+
+      override def open(parameters: Configuration): Unit = {
+        // 调用flatMap 前调用
+
+        getRuntimeContext
+      }
+
+      override def close(): Unit = super.close()
+
+      override def flatMap(value: SensorReading, out: Collector[SensorReading]): Unit = {
+
+      }
+    })
+//    unionResStream.print()
     env.execute("source test")
 
   }
+
+
 
 }

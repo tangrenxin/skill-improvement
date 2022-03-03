@@ -2,7 +2,6 @@ package com.apitest.d.window
 
 import com.apitest.c.sink.SensorReading
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.windowing.assigners.{EventTimeSessionWindows, SlidingEventTimeWindows, TumblingEventTimeWindows}
 import org.apache.flink.streaming.api.windowing.time.Time
 
 /**

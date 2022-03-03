@@ -42,6 +42,10 @@ public class LC206ReverseList {
     ListNode headRes2 = reverseListMethod2(head);
     System.out.print("\n翻转链表：");
     ListNodeUtils.printLinkedList(headRes2);
+
+    ListNode headRes3 = reverseListMethod1Test(head);
+    System.out.print("\n reverseListMethod1Test翻转链表：");
+    ListNodeUtils.printLinkedList(headRes3);
   }
 
   /**
@@ -92,6 +96,21 @@ public class LC206ReverseList {
       head = currHeadNext;
     }
     return resHead;
+  }
+
+
+  private static ListNode reverseListMethod1Test(ListNode head) {
+
+    ListNode newHead = null;
+    // 当前节点的下一个节点
+    ListNode currNext;
+    while (head!=null){
+      currNext = head.next;
+      head.next = newHead;
+      newHead = head;
+      head=currNext;
+    }
+    return newHead;
   }
 
 }
