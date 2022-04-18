@@ -54,7 +54,7 @@ public class C05BucketSort {
     int[] nums = new int[20];
     System.out.print("初始数组：");
     for (int i = 0; i < 20; i++) {
-      nums[i] = rand.nextInt(100 - 90 + 1) + 90;
+      nums[i] = rand.nextInt(100  + 1) + 90;
       System.out.print(nums[i] + " ");
     }
     System.out.println();
@@ -79,12 +79,17 @@ public class C05BucketSort {
     ArrayList<ArrayList<Integer>> bucketLists = new ArrayList<>(bucketNum);
     // 那每个桶的 区间长度=(max-min)/(桶数量-1)
     int intervalLength = (max - min) / (bucketNum - 1);
+    // 创建 bucketNum 个空桶
+    for (int i = 0; i < bucketNum; i++) {
+      bucketLists.add(new ArrayList<>());
+    }
     // TODO 3.遍历原始数组，将每个元素放入桶中
     for (int i = 0; i < arr.length; i++) {
       // min 是原数组的最小值，作为偏移量
       // 如何确定元素arr[i]被分到哪个桶呢？
       // 1.计算出当前元素arr[i]到偏移量(min)的偏移长度 len = arr[i] - min
       // 2.桶的编号=偏移长度/桶的区间长度（桶的编号从 0 开始）
+      System.out.println(arr[i]);
       int bucketIndex = (arr[i] - min) / intervalLength;
       bucketLists.get(bucketIndex).add(arr[i]);
     }
