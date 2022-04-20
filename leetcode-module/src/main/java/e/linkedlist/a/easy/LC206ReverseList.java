@@ -101,16 +101,7 @@ public class LC206ReverseList {
 
   private static ListNode reverseListMethod1Test(ListNode head) {
 
-    ListNode newHead = null;
-    // 当前节点的下一个节点
-    ListNode currNext;
-    while (head!=null){
-      currNext = head.next;
-      head.next = newHead;
-      newHead = head;
-      head=currNext;
-    }
-    return newHead;
+    return head;
   }
 
 }
